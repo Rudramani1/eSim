@@ -123,7 +123,7 @@ function installKicad
 }
 
 
-function installDependency
+function installDependency #Bug fixed don’t need to install python3-distutils separately for Python 3.10+
 {
 
     set +e      # Temporary disable exit on error
@@ -136,11 +136,14 @@ function installDependency
     set -e      # Re-enable exit on error
     trap error_exit ERR
     
-    echo "Instaling virtualenv......................."
-    sudo apt install python3-virtualenv
-   
+    echo "Installing python3-venv...................."
+    sudo apt-get install -y python3-venv
+
+    echo "Installing python3-pip....................."
+    sudo apt-get install -y python3-pip
+
     echo "Creating virtual environment to isolate packages "
-    virtualenv $config_dir/env
+    python3 -m venv $config_dir/env
     
     echo "Starting the virtual env..................."
     source $config_dir/env/bin/activate
@@ -160,13 +163,7 @@ function installDependency
     echo "Installing Matplotlib......................"
     sudo apt-get install -y python3-matplotlib
 
-    echo "Installing Distutils......................."
-    sudo apt-get install -y python3-distutils
-
-    # Install NgVeri Depedencies
-    echo "Installing Pip3............................"
-    sudo apt install -y python3-pip
-
+    # Install NgVeri Dependencies
     echo "Installing Watchdog........................"
     pip3 install watchdog
 
@@ -179,14 +176,13 @@ function installDependency
     echo "Installing SandPiper Saas.................."
     pip3 install sandpiper-saas
 
-   
-    echo "Installing Hdlparse......................"
+    echo "Installing hdlparse again.................."
     pip3 install hdlparse
 
-    echo "Installing matplotlib................"
+    echo "Installing matplotlib via pip.............."
     pip3 install matplotlib
 
-    echo "Installing PyQt5............."
+    echo "Installing PyQt5 via pip..................."
     pip3 install PyQt5  
 }
 
